@@ -82,8 +82,7 @@ static int apdu_interface_connect(struct euicc_ctx *ctx)
     {
         fprintf(stderr, "Device missing AT+CGLA support\n");
         return -1;
-    }
-    */
+    }*/
     return 0;
 }
 
@@ -109,7 +108,11 @@ static int apdu_interface_transmit(struct euicc_ctx *ctx, uint8_t **rx, uint32_t
         return -1;
     }
 
-    fprintf(fuart, "AT+CGLA=%lx,%u,\"", logic_channel, tx_len * 2);
+    // This fprintf is splitted into 2 lines.
+    // Without this split, the size does not
+    // print accordingly on 32-bit ARMv7l machines
+    fprintf(fuart, "AT+CGLA=%lx,", logic_channel);
+    fprintf(fuart, "%u,\"", tx_len * 2);
     for (uint32_t i = 0; i < tx_len; i++)
     {
         fprintf(fuart, "%02X", (uint8_t)(tx[i] & 0xFF));
